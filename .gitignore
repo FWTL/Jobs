@@ -273,12 +273,4 @@ __pycache__/
 
 # Cake - Uncomment if you are using it
 # tools/
-/Auth.FWT.API/appSettings.config
-/Auth.FWT._Azure/azureauth.properties
-/Auth.FWT.API/Web.DEV.config
-/Auth.FWT.API/Web.DEVELOPMENT.config
-/QueueReceiver/appSettings.config
-/QueueReceiver/appConnectionStrings.config
-/FWT.AuthServer/appsettings.Development.json
-/AzureSetup/azureauth.properties
-/FWT.Api/appsettings.Development.json
+/<%= solutionName %>.Api/appsettings.Development.json
