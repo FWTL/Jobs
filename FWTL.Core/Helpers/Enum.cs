@@ -8,7 +8,7 @@ namespace FWTL.Core.Helpers
             ASC = 1,
         }
 
-        public enum PageSize
+        public enum PerPage
         {
             p10 = 10,
             p25 = 25,
@@ -82,8 +82,9 @@ namespace FWTL.Core.Helpers
 
         public enum JobState
         {
-            Failed = 0,
-            Fetching = 1,
+            Failed = -1,
+            Queued = 1,
+            Fetching = 2,
             Done = 99
         }
     }

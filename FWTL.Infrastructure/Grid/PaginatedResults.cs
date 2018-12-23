@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 
@@ -11,11 +12,11 @@ namespace FWTL.Infrastructure.Grid
         {
         }
 
-        public PaginatedResults(long total, PaginationParams paginationParams, SortParams sortParams, List<TData> data)
+        public PaginatedResults(long total, PaginationParams paginationParams, SortParams sortParams, IEnumerable<TData> data)
         {
             BuildUrl(total, paginationParams, sortParams, data);
             CalculateProperties(total, paginationParams);
-            Data = data;
+            Data = data.ToList();
         }
 
         [JsonProperty(PropertyName = "current_page")]
@@ -41,7 +42,7 @@ namespace FWTL.Infrastructure.Grid
 
         public long Total { get; set; }
 
-        private void BuildUrl(long total, PaginationParams paginationParams, SortParams sortParams, List<TData> data)
+        private void BuildUrl(long total, PaginationParams paginationParams, SortParams sortParams, IEnumerable<TData> data)
         {
             Uri baseUri = new Uri(paginationParams.Host);
             Uri uri = new Uri(baseUri, paginationParams.Path);

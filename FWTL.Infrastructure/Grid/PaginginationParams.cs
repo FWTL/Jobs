@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using FluentValidation;
 using FWTL.Core.Extensions;
+using FWTL.Core.Services.Grid;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Primitives;
@@ -9,7 +10,7 @@ using static FWTL.Core.Helpers.Enum;
 namespace FWTL.Infrastructure.Grid
 {
     [ModelBinder(typeof(PaginationParamsModelBinder))]
-    public class PaginationParams
+    public class PaginationParams : IPaginationParams
     {
         public PaginationParams()
         {
@@ -22,7 +23,7 @@ namespace FWTL.Infrastructure.Grid
 
         public int Page { get; set; }
 
-        public PageSize PerPage { get; set; }
+        public PerPage PerPage { get; set; }
 
         internal string Host { get; set; }
 
@@ -39,7 +40,7 @@ namespace FWTL.Infrastructure.Grid
 
             StringValues perPage;
             bindingContext.HttpContext.Request.Query.TryGetValue("per_page", out perPage);
-            PageSize? e_pageSize = perPage.Count > 0 ? perPage[0].ToEnum<PageSize>() : null;
+            PerPage? e_pageSize = perPage.Count > 0 ? perPage[0].ToEnum<PerPage>() : null;
 
             string host = $"{bindingContext.HttpContext.Request.Scheme}://{bindingContext.HttpContext.Request.Host.Value}";
             string path = bindingContext.HttpContext.Request.Path.Value;
@@ -47,7 +48,7 @@ namespace FWTL.Infrastructure.Grid
             var result = new PaginationParams()
             {
                 Page = l_page ?? 0,
-                PerPage = e_pageSize ?? PageSize.p10,
+                PerPage = e_pageSize ?? PerPage.p10,
                 Host = host,
                 Path = path
             };

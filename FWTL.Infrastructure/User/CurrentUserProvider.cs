@@ -6,9 +6,9 @@ namespace FWTL.Infrastructure.User
 {
     public class CurrentUserProvider : ICurrentUserProvider
     {
-        public string PhoneHashId(ClaimsPrincipal user)
+        public string UserId(ClaimsPrincipal user)
         {
-            return user.Claims.First(c => c.Type == "PhoneHashId").Value;
+            return user.Claims.First(c => c.Type == "UserId").Value;
         }
     }
 }

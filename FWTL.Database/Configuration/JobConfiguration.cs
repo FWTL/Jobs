@@ -8,7 +8,8 @@ namespace FWTL.Database.Configuration
     {
         public void Configure(EntityTypeBuilder<Job> builder)
         {
-          
+            builder.Property(x => x.UserId).IsRequired();
+            builder.HasIndex(x => x.UserId);
         }
     }
 }
