@@ -1,8 +1,10 @@
 using System;
+using System.Data.SqlClient;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FWTL.Core.CQRS;
 using FWTL.Core.Extensions;
+using FWTL.Core.Services.Dapper;
 using FWTL.Core.Services.Redis;
 using FWTL.Core.Services.Unique;
 using FWTL.Database;
@@ -152,7 +154,8 @@ namespace FWTL.Api
                 return new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
+                .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
+                .WriteTo.File("Logs/queries.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
                 .CreateLogger();
             });
 
@@ -166,7 +169,14 @@ namespace FWTL.Api
                 return new MemoryCache(new MemoryCacheOptions());
             }).SingleInstance();
 
-            builder.RegisterType<DapperConnector<JobDatabaseCredentials>>().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.Register<IDatabaseConnector<JobDatabaseCredentials>>(b =>
+            {
+                var databaseCredentials = b.Resolve<JobDatabaseCredentials>();
+                var logger = b.Resolve<ILogger>();
+                ProfileDbConnection databaseConnection = new ProfileDbConnection(new SqlConnection(databaseCredentials.ConnectionString), logger);
+                return new DapperConnector<JobDatabaseCredentials>(databaseConnection);
+            }).InstancePerLifetimeScope();
+
             builder.RegisterType<GuidService>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<CurrentUserProvider>().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<RandomService>().AsImplementedInterfaces().SingleInstance();
