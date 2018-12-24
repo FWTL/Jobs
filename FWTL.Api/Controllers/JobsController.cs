@@ -40,7 +40,7 @@ namespace FWTL.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<PaginatedResults<GetJobs.Result>> GetJobs(PaginationParams paginationParams)
+        public async Task<PaginatedResults<GetJobs.Result>> GetJobs([FromQuery] PaginationParams paginationParams)
         {
             return await _queryDispatcher.DispatchAsync<GetJobs.Query, PaginatedResults<GetJobs.Result>>(new GetJobs.Query()
             {

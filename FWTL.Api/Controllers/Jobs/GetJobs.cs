@@ -25,7 +25,7 @@ namespace FWTL.Api.Controllers.Jobs
             {
                 KeyFn = query =>
                 {
-                    return CacheKeyBuilder.Build<GetJobs, Query>(query, m => m);
+                    return CacheKeyBuilder.Build<GetJobs, Query>(query, m => m.UserId, m => m.PaginationParams.Page, m => m.PaginationParams.PerPage);
                 };
             }
 

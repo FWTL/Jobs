@@ -38,6 +38,7 @@ namespace FWTL.Api.Controllers.Jobs
 
             public async Task ExecuteAsync(Command command)
             {
+            
                 await _database.ExecuteAsync(conn =>
                 {
                     return conn.InsertAsync(new Job()
@@ -65,7 +66,7 @@ namespace FWTL.Api.Controllers.Jobs
                 {
                     int queuedJobs = await _database.ExecuteAsync(conn =>
                     {
-                        return conn.ExecuteScalarAsync<int>($"SELECT COUNT(1) FROM {JobMap.Table} WHERE {JobMap.UserId} = @{JobMap.UserId} AND {JobMap.State} == {(int)JobState.Queued}", new { command.UserId });
+                        return conn.ExecuteScalarAsync<int>($"SELECT COUNT(1) FROM {JobMap.Table} WHERE {JobMap.UserId} = @{JobMap.UserId} AND {JobMap.State} = {(int)JobState.Queued}", new { command.UserId });
                     });
 
                     if (queuedJobs >= 5)
@@ -80,7 +81,7 @@ namespace FWTL.Api.Controllers.Jobs
                         WHERE {JobMap.UserId} = @{JobMap.UserId}
                         AND {JobMap.PeerId} = @{JobMap.PeerId}
                         AND {JobMap.PeerType} = @{JobMap.PeerType}
-                        AND ({JobMap.State} IN ( {(int)JobState.Queued}, {(int)JobState.Fetching} )", new { command.UserId, command.PeerId, command.PeerType });
+                        AND {JobMap.State} IN ( {(int)JobState.Queued}, {(int)JobState.Fetching} )", new { command.UserId, command.PeerId, command.PeerType });
                     });
 
                     if (isAlreadyProccessed)

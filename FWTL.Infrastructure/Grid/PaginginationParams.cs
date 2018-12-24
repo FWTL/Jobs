@@ -35,11 +35,11 @@ namespace FWTL.Infrastructure.Grid
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             StringValues page;
-            bindingContext.HttpContext.Request.Query.TryGetValue("page", out page);
+            bindingContext.HttpContext.Request.Query.TryGetValue("Page", out page);
             int? l_page = page.Count > 0 ? page[0].ToN<int>() : null;
 
             StringValues perPage;
-            bindingContext.HttpContext.Request.Query.TryGetValue("per_page", out perPage);
+            bindingContext.HttpContext.Request.Query.TryGetValue("PerPage", out perPage);
             PerPage? e_pageSize = perPage.Count > 0 ? perPage[0].ToEnum<PerPage>() : null;
 
             string host = $"{bindingContext.HttpContext.Request.Scheme}://{bindingContext.HttpContext.Request.Host.Value}";
@@ -74,7 +74,7 @@ namespace FWTL.Infrastructure.Grid
         public PaginationParamsValidator()
         {
             RuleFor(x => x.PerPage).IsInEnum();
-            RuleFor(x => x.Page).InclusiveBetween(0, int.MaxValue);
+            RuleFor(x => x.Page).InclusiveBetween(1, int.MaxValue);
             RuleFor(x => x.Host).NotEmpty();
             RuleFor(x => x.Path).NotEmpty();
         }

@@ -3,7 +3,6 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
 using FluentValidation;
-using FWTL.Core.Services.Sql;
 using FWTL.Database;
 using FWTL.Infrastructure.Configuration;
 using FWTL.Infrastructure.Filters;
@@ -99,6 +98,7 @@ namespace FWTL.Api
                 });
 
                 c.OperationFilter<AuthorizeOperationFilter>();
+                c.DescribeAllEnumsAsStrings();
             });
 
             services.ConfigureSwaggerGen(options =>
@@ -111,8 +111,8 @@ namespace FWTL.Api
 
             applicationContainer = IocConfig.RegisterDependencies(services, _hostingEnvironment, _configuration);
 
-            //var cache = applicationContainer.Resolve<IServer>();
-            //cache.FlushDatabase();
+            var cache = applicationContainer.Resolve<IServer>();
+            cache.FlushDatabase();
 
             return new AutofacServiceProvider(applicationContainer);
         }
