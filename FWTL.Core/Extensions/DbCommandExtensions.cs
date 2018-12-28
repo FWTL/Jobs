@@ -41,6 +41,9 @@ namespace FWTL.Core.Extensions
             {
                 case SqlDbType.VarChar:
                 case SqlDbType.NVarChar:
+                case SqlDbType.Date:
+                case SqlDbType.DateTime:
+                case SqlDbType.DateTime2:
                     {
                         return $"'{parameter.SqlValue}'";
                     }
