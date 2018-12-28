@@ -23,6 +23,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using Serilog;
+using StackExchange.Profiling.Data;
 using StackExchange.Redis;
 
 namespace FWTL.Api
@@ -169,11 +170,13 @@ namespace FWTL.Api
                 return new MemoryCache(new MemoryCacheOptions());
             }).SingleInstance();
 
+            builder.RegisterType<ProfileDbConnection>().AsImplementedInterfaces().SingleInstance();
+
             builder.Register<IDatabaseConnector<JobDatabaseCredentials>>(b =>
             {
                 var databaseCredentials = b.Resolve<JobDatabaseCredentials>();
-                var logger = b.Resolve<ILogger>();
-                ProfileDbConnection databaseConnection = new ProfileDbConnection(new SqlConnection(databaseCredentials.ConnectionString), logger);
+                var profiler = b.Resolve<IDbProfiler>();
+                ProfiledDbConnection databaseConnection = new ProfiledDbConnection(new SqlConnection(databaseCredentials.ConnectionString), profiler);
                 return new DapperConnector<JobDatabaseCredentials>(databaseConnection);
             }).InstancePerLifetimeScope();
 

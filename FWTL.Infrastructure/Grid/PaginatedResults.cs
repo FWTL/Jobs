@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FWTL.Core.Extensions;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 
@@ -51,25 +52,29 @@ namespace FWTL.Infrastructure.Grid
 
             if (paginationParams.Page + 1 <= lastPage)
             {
-                var queryNext = new Dictionary<string, string>
-                {
-                    { nameof(SortParams.ColumnNo), $"{ sortParams.ColumnNo}" },
-                    { nameof(SortParams.Direction), $"{ sortParams.ColumnNo}" },
-                };
-
+                var queryNext = GetSortQueryParams(sortParams);
                 NextPageUrl = QueryHelpers.AddQueryString(uri.ToString(), queryNext);
             }
 
             if (paginationParams.Page - 1 >= 1)
             {
-                var queryPrevious = new Dictionary<string, string>
+                var queryPrevious = GetSortQueryParams(sortParams);
+                PreviousPageUrl = QueryHelpers.AddQueryString(uri.ToString(), queryPrevious);
+            }
+        }
+
+        private Dictionary<string, string> GetSortQueryParams(SortParams sortParams)
+        {
+            if(sortParams.IsNotNull())
+            {
+                return new Dictionary<string, string>
                 {
                     { nameof(SortParams.ColumnNo), $"{ sortParams.ColumnNo}" },
                     { nameof(SortParams.Direction), $"{ sortParams.ColumnNo}" },
                 };
-
-                PreviousPageUrl = QueryHelpers.AddQueryString(uri.ToString(), queryPrevious);
             }
+
+            return new Dictionary<string, string>();
         }
 
         private long CalcualteTo(long total, PaginationParams paginationParams)

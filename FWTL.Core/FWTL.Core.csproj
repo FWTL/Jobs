@@ -16,4 +16,8 @@
       <HintPath>..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\system.data.sqlclient\4.5.1\ref\netstandard2.0\System.Data.SqlClient.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions\NewFolder\" />
+  </ItemGroup>
 </Project>

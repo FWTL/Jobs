@@ -5,12 +5,12 @@ using FluentValidation;
 using FWTL.Core.CQRS;
 using FWTL.Core.Entities;
 using FWTL.Core.Entities.Maps;
+using FWTL.Core.Extensions;
 using FWTL.Core.Services.Dapper;
 using FWTL.Database;
 using FWTL.Infrastructure.Validation;
 using NodaTime;
 using static FWTL.Core.Helpers.Enum;
-using FWTL.Core.Extensions;
 
 namespace FWTL.Api.Controllers.Jobs
 {
@@ -38,7 +38,6 @@ namespace FWTL.Api.Controllers.Jobs
 
             public async Task ExecuteAsync(Command command)
             {
-            
                 await _database.ExecuteAsync(conn =>
                 {
                     return conn.InsertAsync(new Job()
@@ -77,7 +76,7 @@ namespace FWTL.Api.Controllers.Jobs
                     bool isAlreadyProccessed = await _database.ExecuteAsync(conn =>
                     {
                         return conn.ExecuteScalarAsync<bool>($@"
-                        SELECT 1 FROM {JobMap.Table} 
+                        SELECT 1 FROM {JobMap.Table}
                         WHERE {JobMap.UserId} = @{JobMap.UserId}
                         AND {JobMap.PeerId} = @{JobMap.PeerId}
                         AND {JobMap.PeerType} = @{JobMap.PeerType}

@@ -1,68 +1,38 @@
 ﻿using System;
 using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
+using FWTL.Core.Extensions;
 using Serilog;
+using StackExchange.Profiling.Data;
 
 namespace FWTL.Infrastructure.Dapper
 {
-    public class ProfileDbConnection : DbConnection
+    public class ProfileDbConnection : IDbProfiler
     {
-        private readonly DbConnection _connection;
         private readonly ILogger _logger;
-        private DbCommand _command;
 
-        public ProfileDbConnection(DbConnection connection, ILogger logger)
+        public ProfileDbConnection(ILogger logger)
         {
-            _connection = connection;
             _logger = logger;
         }
 
-        public override string ConnectionString
+        public bool IsActive => true;
+
+        public void ExecuteFinish(IDbCommand profiledDbCommand, SqlExecuteType executeType, DbDataReader reader)
         {
-            get { return _connection.ConnectionString; }
-            set { _connection.ConnectionString = value; }
         }
 
-        public override string Database => _connection.Database;
-
-        public override string DataSource => _connection.DataSource;
-
-        public override string ServerVersion => _connection.ServerVersion;
-
-        public override ConnectionState State => _connection.State;
-
-        public override void ChangeDatabase(string databaseName)
+        public void ExecuteStart(IDbCommand profiledDbCommand, SqlExecuteType executeType)
         {
-            _connection.ChangeDatabase(databaseName);
+            _logger.Information(profiledDbCommand.ToSql());
         }
 
-        public override void Close()
+        public void OnError(IDbCommand profiledDbCommand, SqlExecuteType executeType, Exception exception)
         {
-            _connection.Close();
         }
 
-        public override void Open()
+        public void ReaderFinish(IDataReader reader)
         {
-            _connection.Open();
-        }
-
-        protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
-        {
-            return _connection.BeginTransaction();
-        }
-
-        protected override DbCommand CreateDbCommand()
-        {
-            _command = _connection.CreateCommand();
-            _command.Disposed += _command_Disposed;
-            return _command;
-        }
-
-        private void _command_Disposed(object sender, EventArgs e)
-        {
-            var dbCommand = sender as SqlCommand;
-            _logger.Information(dbCommand.CommandText);
         }
     }
 }

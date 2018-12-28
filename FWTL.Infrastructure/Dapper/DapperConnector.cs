@@ -30,14 +30,8 @@ namespace FWTL.Infrastructure.Dapper
 
         public async Task<T> ExecuteAsync<T>(Func<IDbConnection, Task<T>> data)
         {
-            try
-            {
-                await OpenAsync(_databaseConnection);
-                return await data(_databaseConnection);
-            }
-            finally
-            {
-            }
+            await OpenAsync(_databaseConnection);
+            return await data(_databaseConnection);
         }
 
         private void Open(DbConnection connection)

@@ -35,11 +35,11 @@ namespace FWTL.Infrastructure.Grid
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             StringValues page;
-            bindingContext.HttpContext.Request.Query.TryGetValue("Page", out page);
+            bindingContext.HttpContext.Request.Query.TryGetValue("page", out page);
             int? l_page = page.Count > 0 ? page[0].ToN<int>() : null;
 
             StringValues perPage;
-            bindingContext.HttpContext.Request.Query.TryGetValue("PerPage", out perPage);
+            bindingContext.HttpContext.Request.Query.TryGetValue("perPage", out perPage);
             PerPage? e_pageSize = perPage.Count > 0 ? perPage[0].ToEnum<PerPage>() : null;
 
             string host = $"{bindingContext.HttpContext.Request.Scheme}://{bindingContext.HttpContext.Request.Host.Value}";

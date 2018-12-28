@@ -13,6 +13,7 @@ using FWTL.Infrastructure.Cache;
 using FWTL.Infrastructure.Grid;
 using FWTL.Infrastructure.Handlers;
 using StackExchange.Redis;
+using static Dapper.SqlMapper;
 using static FWTL.Core.Helpers.Enum;
 
 namespace FWTL.Api.Controllers.Jobs
@@ -48,10 +49,18 @@ namespace FWTL.Api.Controllers.Jobs
 
             public async Task<PaginatedResults<Result>> HandleAsync(Query query)
             {
-                IEnumerable<Job> jobs = await _database.ExecuteAsync(conn =>
+                GridReader reader = await _database.ExecuteAsync(conn =>
                 {
-                    return conn.QueryAsync<Job>($"SELECT * FROM {JobMap.Table} WHERE {JobMap.UserId} = {JobMap.UserId} ORDER BY {JobMap.Id} DESC {query.PaginationParams.ToSql()}");
+                    return conn.QueryMultipleAsync(
+                        $"SELECT COUNT(1) FROM {JobMap.Table} " +
+                        $"WHERE {JobMap.UserId} = @{JobMap.UserId}; " +
+                        $"SELECT * FROM {JobMap.Table} " +
+                        $"WHERE {JobMap.UserId} = @{JobMap.UserId} " +
+                        $"ORDER BY {JobMap.Id} DESC {query.PaginationParams.ToSql()}", new { query.UserId });
                 });
+                int total = await reader.ReadFirstAsync<int>();
+                IEnumerable<Job> jobs = await reader.ReadAsync<Job>();
+
                 IEnumerable<Result> result = jobs.Select(job => new Result(job));
 
                 result.Where(r => r.State == JobState.Fetching).ForEach(r =>
@@ -60,7 +69,7 @@ namespace FWTL.Api.Controllers.Jobs
                     r.Message = value.HasValue ? value.ToString() : "Processing";
                 });
 
-                return new PaginatedResults<Result>(0, query.PaginationParams, null, result);
+                return new PaginatedResults<Result>(total, query.PaginationParams, null, result);
             }
         }
 

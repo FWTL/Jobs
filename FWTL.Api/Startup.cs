@@ -2,6 +2,7 @@ using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
+using Dapper.Contrib.Extensions;
 using FluentValidation;
 using FWTL.Database;
 using FWTL.Infrastructure.Configuration;
@@ -44,6 +45,10 @@ namespace FWTL.Api
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services)
         {
+            SqlMapperExtensions.TableNameMapper = (type) => {
+                return type.Name;
+            };
+
             app.UseAuthentication();
 
             app.UseSwagger();
