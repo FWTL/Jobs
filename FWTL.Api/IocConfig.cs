@@ -153,19 +153,12 @@ namespace FWTL.Api
 
             builder.Register<ILogger>(b =>
             {
-
-
-
-
-                
-
-
                 var format = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {NewLine}{Message:lj}{NewLine}{Exception}";
 
                 return new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console(outputTemplate: format)
-                .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: LogEventLevel.Error, outputTemplate : format)
+                .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: LogEventLevel.Error, outputTemplate: format)
                 .WriteTo.Logger(cl => cl.Filter.ByIncludingOnly(evt => evt.Level == LogEventLevel.Information).WriteTo.File("Logs/queries.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: LogEventLevel.Information, outputTemplate: format))
                 .CreateLogger();
             });
