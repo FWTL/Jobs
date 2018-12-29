@@ -82,6 +82,11 @@ namespace FWTL.Api.Controllers.Jobs
 
         public class Result
         {
+            public Result()
+            {
+
+            }
+
             public Result(Job job)
             {
                 Id = job.Id;
