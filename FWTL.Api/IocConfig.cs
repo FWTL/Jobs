@@ -153,6 +153,10 @@ namespace FWTL.Api
 
             builder.Register<ILogger>(b =>
             {
+
+
+
+
                 var format = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {NewLine}{Message:lj}{NewLine}{Exception}";
 
                 return new LoggerConfiguration()
