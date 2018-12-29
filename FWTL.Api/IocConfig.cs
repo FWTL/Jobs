@@ -157,6 +157,9 @@ namespace FWTL.Api
 
 
 
+                
+
+
                 var format = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {NewLine}{Message:lj}{NewLine}{Exception}";
 
                 return new LoggerConfiguration()
