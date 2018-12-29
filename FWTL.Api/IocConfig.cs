@@ -23,6 +23,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NodaTime;
 using Serilog;
+using Serilog.Events;
 using StackExchange.Profiling.Data;
 using StackExchange.Redis;
 
@@ -155,8 +156,8 @@ namespace FWTL.Api
                 return new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
-                .WriteTo.File("Logs/queries.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
+                .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: LogEventLevel.Error)
+                .WriteTo.Logger(cl => cl.Filter.ByIncludingOnly(evt => evt.Level == LogEventLevel.Information).WriteTo.File("Logs/queries.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: LogEventLevel.Information))
                 .CreateLogger();
             });
 

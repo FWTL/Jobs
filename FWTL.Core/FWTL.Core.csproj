@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Configurations>Debug;Release;Nuget</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,15 +10,8 @@
     <PackageReference Include="IdentityModel" Version="3.10.2" />
     <PackageReference Include="NodaTime" Version="2.4.2" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="System.Data.SqlClient">
-      <HintPath>..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\system.data.sqlclient\4.5.1\ref\netstandard2.0\System.Data.SqlClient.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Extensions\NewFolder\" />
-  </ItemGroup>
 </Project>
