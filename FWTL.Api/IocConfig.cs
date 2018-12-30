@@ -174,7 +174,6 @@ namespace FWTL.Api
             }).SingleInstance();
 
             builder.RegisterType<ProfileDbConnection>().AsImplementedInterfaces().SingleInstance();
-
             builder.Register<IDatabaseConnector<JobDatabaseCredentials>>(b =>
             {
                 var databaseCredentials = b.Resolve<JobDatabaseCredentials>();
